@@ -38,5 +38,5 @@ CommitParts is a Visual Studio Code (VSCode) extension that allows you to break 
 
 ## License
 
-This extension is licensed under the [MIT License](https://github.com/favourch/commitinparts/blob/dev/LICENSE).
+This extension is licensed under the [MIT License](https://github.com/favourch/commitinparts/blob/dev/LICENSE.md).
 
