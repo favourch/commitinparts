@@ -1,7 +1,8 @@
 const vscode = require('vscode');
+const { exec } = require('child_process');
 
 function activate(context) {
-  let disposable = vscode.commands.registerCommand('extension.commitParts', async () => {
+  let disposable = vscode.commands.registerCommand('extension.commitInParts', async () => {
     // Get the active text editor
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
@@ -13,11 +14,11 @@ function activate(context) {
     const document = editor.document;
     const fileContents = document.getText();
 
-    // Define the logic to split the file contents into parts (change as per your requirements)
-    const parts = fileContents.split('\n'); // Split by newline for example
+    // Define the logic to split the file contents into parts (commit code blocks or sections based on comments)
+    const parts = splitFileIntoParts(fileContents);
 
     // Check if Git is initialized in the workspace
-    const isGitInitialized = await isGitInitialized();
+    const isGitInitialized = await checkGitInitialized();
 
     if (!isGitInitialized) {
       vscode.window.showErrorMessage('Git is not initialized in the current workspace.');
@@ -37,9 +38,53 @@ function activate(context) {
   context.subscriptions.push(disposable);
 }
 
-async function isGitInitialized() {
-  const result = await executeGitCommand('git rev-parse --is-inside-work-tree');
-  return result.trim() === 'true';
+function splitFileIntoParts(fileContents) {
+  // Split the file contents into parts based on comments or code blocks
+  // Modify this logic according to your requirements
+  const parts = [];
+  let currentPart = '';
+  const lines = fileContents.split('\n');
+
+  for (const line of lines) {
+    if (isCommentLine(line) || isCodeBlockStart(line)) {
+      if (currentPart.trim() !== '') {
+        parts.push(currentPart.trim());
+      }
+      currentPart = line;
+    } else {
+      currentPart += '\n' + line;
+    }
+  }
+
+  if (currentPart.trim() !== '') {
+    parts.push(currentPart.trim());
+  }
+
+  return parts;
+}
+
+function isCommentLine(line) {
+  // Check if the line is a comment line
+  // Modify this logic based on the comment style used in your code
+  return line.trim().startsWith('//');
+}
+
+function isCodeBlockStart(line) {
+  // Check if the line indicates the start of a new code block or section
+  // Modify this logic based on your requirements
+  return line.trim().startsWith('/*') || line.trim().startsWith('function');
+}
+
+async function checkGitInitialized() {
+  return new Promise((resolve, reject) => {
+    exec(getGitCommand('rev-parse --is-inside-work-tree'), (error, stdout) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout.trim() === 'true');
+      }
+    });
+  });
 }
 
 async function executeGitCommand(command) {
@@ -48,13 +93,22 @@ async function executeGitCommand(command) {
     throw new Error('No workspace found.');
   }
 
-  const options = { cwd: workspaceRoot };
-  const result = await vscode.commands.executeCommand('vscode.executeTerminalCommand', { command, options });
-  if (!result) {
-    throw new Error('Git command execution failed.');
-  }
+  return new Promise((resolve, reject) => {
+    exec(getGitCommand(command), { cwd: workspaceRoot }, (error, stdout) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout.trim());
+      }
+    });
+  });
+}
 
-  return result;
+function getGitCommand(command) {
+  const vscodeConfig = vscode.workspace.getConfiguration('git');
+  const gitExecutablePath = vscodeConfig.get('path') || 'git';
+
+  return `${gitExecutablePath} ${command}`;
 }
 
 function deactivate() {}

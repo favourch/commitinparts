@@ -1,7 +1,12 @@
 {
-  "name": "commitparts",
-  "displayName": "commitparts",
-  "description": "The CommitParts extension for Visual Studio Code allows you to break the contents of a file into parts and commit each part separately. This extension enhances your workflow by providing fine-grained control over commits, allowing you to commit changes in smaller, logical portions.",
+  "name": "commitinparts",
+  "displayName": "Commit In Parts",
+  "description": "The CommitInParts extension for Visual Studio Code allows you to break the contents of a file into parts and commit each part separately. This extension enhances your workflow by providing fine-grained control over commits, allowing you to commit changes in smaller, logical portions.",
+  "publisher": "Favour Chukwuedo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/favourch/commitinparts"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.79.0"
@@ -13,8 +18,8 @@
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "commitparts.helloWorld",
-      "title": "Hello World"
+      "command": "extension.commitInParts",
+      "title": "Commit File Parts"
     }]
   },
   "scripts": {
