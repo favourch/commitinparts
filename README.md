@@ -33,9 +33,10 @@ CommitParts is a Visual Studio Code (VSCode) extension that allows you to break 
 
 ## Feedback and Support
 
-- If you encounter any issues or have suggestions for improvements, please submit them on the [GitHub repository](https://github.com/your-username/commitparts).
+- If you encounter any issues or have suggestions for improvements, please submit them on the [GitHub repository](https://github.com/favourch/commitinparts).
 - You can also contribute to the project by submitting pull requests.
 
 ## License
 
-This extension is licensed under the [MIT License](LICENSE).
+This extension is licensed under the [MIT License](https://github.com/favourch/commitinparts/blob/main/LICENSE).
+
